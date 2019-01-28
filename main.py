@@ -1,34 +1,24 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import re
+import sys
 from collections import defaultdict
 
 
-class WordCount():
-    counter = {}
+def main(file_name):
+    super_dict = defaultdict(int)
+    stop_words = {word for word in read_file('stop_words.txt').split(',')}
 
-    def __init__(word):
-        pass
+    for word in re.split('[^a-zA-Z]', read_file(f'{file_name}.txt')):
+        if len(word) > 1 and word not in stop_words:
+            super_dict[word.lower()] += 1
 
-
-def main():
-    super_dict = {}
-    print('ok')
-    with open('pride-and-prejudice.txt', 'r') as text_file:
-        for line in text_file.readlines():
-            for word in line.split():
-                word = formatter(word)
-                if word not in super_dict:
-                    super_dict[word] = 0
-
-                super_dict[word] += 1
+    for word, count in sorted(super_dict.items(), key=lambda args: args[::-1]):
+        print(word, '-', count)
 
 
-    print(super_dict)
+def read_file(file_name):
+    with open(file_name, 'r') as text_file:
+        return text_file.read()
 
 
-def formatter(word):
-    replace_with = '.,-?!:;()"'
-    return re.sub(replace_with, '', word)
-
-
-main()
+main(*sys.argv[1:])
